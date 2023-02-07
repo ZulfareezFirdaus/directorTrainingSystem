@@ -1,0 +1,499 @@
+jQuery(".form-valide").validate({
+    rules: {
+        "val-email": {
+            required: !0,
+            email: !0
+        },
+        "val-password": {
+            required: !0,
+            minlength: 5
+        },
+        "val-confirm-password": {
+            required: !0,
+            equalTo: "#val-password"
+        },
+		"val-assetTypeSelect": {
+            required: !0
+        },
+        "val-suggestions": {
+            required: !0,
+            minlength: 5
+        },
+        "val-rfidNo": {
+            required: !0,
+            minlength: 3,
+			digits: !0
+        },
+        "val-siriNo": {
+            required: !0,
+            minlength: 3
+        },
+        "val-ownerName": {
+            required: !0,
+            minlength: 3
+        },
+        "val-ownerDept": {
+            required: !0
+        },
+		"val-ownerNameSelect": {
+            required: !0
+        },
+		"val-usersName": {
+            required: !0,
+			minlength: 10
+        },
+		"val-usersEmail": {
+            required: !0,
+            email: !0
+        },
+        
+        
+    },
+    messages: {
+        "val-email": "Please enter the valid email address",
+		"val-usersEmail": {
+            required: "Please provide the user email",
+            email: "Please enter the valid email address"
+        },
+        "val-password": {
+            required: "Please provide the password",
+            minlength: "Your password must be at least 5 characters long"
+        },
+        "val-confirm-password": {
+            required: "Please provide the password",
+            minlength: "Your password must be at least 5 characters long",
+            equalTo: "Please enter the same password as above"
+        },
+		
+		"val-usersName": {
+            required: "Please enter the user name",
+            minlength: "Your name must be at least 10 characters long"
+        },
+        
+        "val-assetType": {
+            required: "Please enter the asset name",
+            minlength: "Your Asset Name must consist of at least 3 characters"
+        },
+        "val-rfidNo": {
+            required: "Please enter the RFID number",
+            minlength: "Your RFID Number must consist of at least 3 numbers",
+			digits: "Must be the number only"
+        },
+        "val-siriNo": {
+            required: "Please enter the serial number",
+            minlength: "Your serial Number must consist of at least 3 characters and numbers"
+        },
+        "val-ownerName": {
+            required: "Please enter the owner name",
+            minlength: "Your Siri Number must consist of at least 3 characters and numbers"
+        },
+        "val-ownerDept": {
+            required: "Please select the owner depatment",
+            minlength: "Your Siri Number must consist of at least 3 characters and numbers"
+        },
+		"val-assetTypeSelect": {
+            required: "Please select the asset type"
+        },
+		"val-ownerNameSelect": {
+            required: "Please select the asset type"
+        }
+    },
+
+    ignore: [],
+    errorClass: "invalid-feedback animated fadeInUp",
+    errorElement: "div",
+    errorPlacement: function(e, a) {
+        jQuery(a).parents(".form-group > div").append(e)
+    },
+    highlight: function(e) {
+        jQuery(e).closest(".form-group").removeClass("is-invalid").addClass("is-invalid")
+    },
+    success: function(e) {
+        jQuery(e).closest(".form-group").removeClass("is-invalid"), jQuery(e).remove()
+    },
+});
+
+
+$('#btnNextOwner').click( function() { 
+    $(".form-valide").valid();  // test the form for validity
+});
+
+$('#btnAddUser').click( function() { 
+    $(".form-valide").valid();  // test the form for validity
+});
+
+$('#btnLogin').click( function() { 
+    $(".form-valide").valid();  // test the form for validity
+});
+
+$('#btnNextiPad').click( function() { 
+    $(".form-valide").valid();  // test the form for validity
+});
+
+ $('#btnNextiPad').click(function() {
+    var status = "previewInfoIpad";
+	
+	if($(".val-assetType").val() == 'InputText'){
+		var assetType = $(".val-assetType2").val();
+	}
+	else{
+		var assetType = $(".val-assetType").val();
+	}
+    
+    var rfidno = $("#val-rfidNo").val();
+    var sirino = $("#val-siriNo").val();
+    var remarks = $("#val-remarks").val();
+
+    if(assetType != "" && rfidno != "" && sirino != "" ){ 
+        $.ajax({
+          url: "./process.php",
+          method: "POST",
+          dataType: "json",
+          data: {
+            status: status,
+            assetType : assetType,
+            rfidno : rfidno,
+            sirino : sirino,
+            remarks : remarks
+          },
+          success: function(data) {
+              $('#ipadDetails').html(data);
+              $("#basicModal").modal('show');
+              $("#emptyAlert").hide();
+          }
+        });
+    }
+  });
+
+ $('#btnNextOwner').click(function() {
+    var status = "previewInfoOwner";
+     
+    if($(".val-ownerDeptSelect").val() == 'InputText'){
+		var ownerDept = $(".val-ownerDept2").val();
+	}
+	else{
+		var ownerDept = $(".val-ownerDeptSelect").val();
+	} 
+     
+    var ownerName = $("#val-ownerName").val();
+
+    if(ownerName != "" && ownerDept != "" ){ 
+        $.ajax({
+          url: "./process.php",
+          method: "POST",
+          dataType: "json",
+          data: {
+            status: status,
+            ownerName : ownerName,
+            ownerDept : ownerDept
+          },
+          success: function(data) {
+              $('#ownerDetails').html(data);
+              $("#basicModal").modal('show');
+              $("#emptyAlert").hide();
+          }
+        });
+    }
+  });
+  
+  $('#btnNextAssignOwner').click(function() {
+    var status = "previewInfoAssignOwner";
+	if($(".val-ownerDeptSelect").val() == 'InputText'){
+		var ownerDept = $(".val-ownerDept2").val();
+		var addDept = '';
+	}
+	else{
+		var ownerDept = $(".val-ownerDept").val();
+		var addDept = 'exist';
+	}
+
+	if($(".val-ownerNameSelect").val() == 'InputText'){
+		var ownerName = $(".val-ownerName2").val();
+		var addName = '';
+	}
+	else{
+		var ownerName = $(".val-ownerName").val();
+		var addName = 'exist';
+	}
+
+	var assetType = $("#val-assetType").val();
+    var rfidno = $("#val-rfidNo").val();
+    var sirino = $("#val-siriNo").val();
+	var ipadID = $("#val-IDiPad").val();
+
+    if(ownerName != "" && ownerDept != "" ){ 
+	
+        $.ajax({
+          url: "./process.php",
+          method: "POST",
+          dataType: "json",
+          data: {
+            status: status,
+            ownerDept : ownerDept,
+            ownerName : ownerName,
+			assetType : assetType,
+            rfidno : rfidno,
+            sirino : sirino,
+			addDept : addDept,
+			addName : addName,
+			ipadID : ipadID
+          },
+          success: function(data) {
+              $('#ownerDetails').html(data);
+              $("#basicModal").modal('show');
+              $("#emptyAlert").hide();
+          }
+        });
+    }
+  });
+        
+$('#saveiPad').click(function() {
+    var status = "submitInfoIpad";
+    if($(".val-assetType").val() == 'InputText'){
+		var assetType = $(".val-assetType2").val();
+	}
+	else{
+		var assetType = $(".val-assetType").val();
+	}
+	
+    var rfidno = $("#val-rfidNo").val();
+    var sirino = $("#val-siriNo").val();
+    var remarks = $("#val-remarks").val();
+
+    if(assetType != "" && rfidno != "" && sirino != "" ){ 
+        $.ajax({
+          url: "./process.php",
+          method: "POST",
+          dataType: "json",
+          data: {
+            status: status,
+            assetType : assetType,
+            rfidno : rfidno,
+            sirino : sirino,
+            remarks : remarks
+          },
+          success: function(data) {
+                $("#basicModal").modal('hide');
+                $('.form-valide')[0].reset();
+				$("#myDiv").hide();
+                $('#load_todayIpadReg').load("todayIpadRegTable.php").fadeIn("slow");
+				$('#val-assetTypeSelect').load("selectAssetType.php").fadeIn("slow");
+				$('#indicatoriPad').load("indicatoriPad.php").fadeIn("slow");
+              
+              swal({
+                   title: "Successfully!",
+                   text: "Insert Record Successfully!",
+                   type: "success",
+                   showCancelButton: true,
+                   confirmButtonColor: "#3085d6",
+                   confirmButtonText: "Assign Owner",
+				   cancelButtonText: "Done",
+                   closeOnConfirm: false
+                }, function () {
+                      window.location.href='assignOwner.php';
+                });
+                
+          }
+        });
+    }
+});
+
+$('#saveOwner').click(function() {
+    var status = "submitInfoOwner";
+    var ownerName = $("#val-ownerName").val();
+    var ownerDept = $("#val-ownerDept").val();
+
+    if(ownerName != "" && ownerDept != "" ){ 
+        $.ajax({
+          url: "./process.php",
+          method: "POST",
+          dataType: "json",
+          data: {
+            status: status,
+            ownerName : ownerName,
+            ownerDept : ownerDept
+          },
+          success: function(data) {
+                swal({
+                   title: "Successfully!",
+                   text: "Insert Record Successfully!",
+                   type: "success",
+                   showCancelButton: false,
+                   confirmButtonColor: "#3085d6",
+                   confirmButtonText: "Done",
+                   closeOnConfirm: false
+                }, function () {
+                      window.location.href='../';
+                });
+               
+          }
+        });
+    }
+});
+
+$('.updateIpad').click(function() {
+    var serialNo = $(this).attr("id");
+    var status = "updateIpad";
+
+    if(serialNo != "" ){ 
+        $.ajax({
+          url: "./process.php",
+          method: "POST",
+          dataType: "json",
+          data: {
+            status: status,
+            serialNo : serialNo
+          },
+          success: function(data) {
+                $('#ipadUpdateDetails').html(data);
+                $("#ipadUpdatemodal").modal('show');
+          }
+        });
+    }
+});
+
+$('.viewIpad').click(function() {
+    var serialNo = $(this).attr("id");
+    var status = "viewIpad";
+
+    if(serialNo != "" ){ 
+        $.ajax({
+          url: "./process.php",
+          method: "POST",
+          dataType: "json",
+          data: {
+            status: status,
+            serialNo : serialNo
+          },
+          success: function(data) {
+                $('#ipadViewDetails').html(data);
+                $("#ipadViewmodal").modal('show');
+          }
+        });
+    }
+});
+
+$('#saveupdateiPad').click(function() {
+    var status = "saveupdateIpad";
+    var assetType = $("#val-assetType").val();
+    var rfidno = $("#val-rfidNo").val();
+    var sirino = $("#val-siriNo").val();
+    var remarks = $("#val-remarks").val();
+    var dateregist = $("#val-dateregist").val();
+
+    if(assetType != "" ){
+        $.ajax({
+          url: "./process.php",
+          method: "POST",
+          dataType: "json",
+          data: {
+            status: status,
+            assetType : assetType,
+            rfidno : rfidno,
+            sirino : sirino,
+            dateregist : dateregist,
+            remarks : remarks
+          },
+          success: function(data) {
+                $("#ipadUpdatemodal").modal('hide');
+                $("#successAlert").show();
+                setTimeout(function() {
+                  $('#successAlert').fadeOut('slow');
+                }, 2000);
+                $('body').scrollTop(0);
+                $('#load_updateIpad').load("fetch.php").fadeIn("slow");
+          }
+        });
+    }
+});
+
+$('#saveAssignOwner').click(function() {
+    var status = "submitAssignOwner";
+	var assetType = $(".val-assetType").val();
+    var rfidno = $("#val-rfidNo").val();
+    var sirino = $("#val-siriNo").val();
+	var ownerName = $("#val-ownerName").val();
+    var ownerDept = $("#val-ownerDept").val();
+	var ipadID = $("#ipadID").val();
+	var addDept = $("#addDept").val();
+	var addName = $("#addName").val();
+	
+    if(assetType != "" && rfidno != "" && sirino != "" ){ 
+        $.ajax({
+          url: "./process.php",
+          method: "POST",
+          data: {
+            status: status,
+            assetType : assetType,
+            rfidno : rfidno,
+            sirino : sirino,
+			ownerName : ownerName,
+			ownerDept : ownerDept,
+			ipadID : ipadID,
+			addDept : addDept,
+			addName : addName
+          },
+          success: function(data) {
+			  
+			  $("#basicModal").modal('hide');
+              swal({
+                   title: "Successfully!",
+                   text: "Insert Record Successfully!",
+                   type: "success",
+                   showCancelButton: false,
+                   confirmButtonColor: "#3085d6",
+                   confirmButtonText: "Done",
+                   closeOnConfirm: false
+                }, function () {
+                      window.location.href='../';
+                }); 
+          },
+        });
+    }
+});
+
+$('#val-ownerDept').on('change', function(){
+    var demovalue = $(this).val(); 
+    
+    if(demovalue == "InputText"){
+        $("#myDiv").show();
+    }
+    else{
+        $("#myDiv").hide();
+    }
+});
+
+$('#val-assetTypeSelect').on('change', function(){
+    var demovalue = $(this).val(); 
+    
+    if(demovalue == "InputText"){
+        $("#myDiv").show();
+    }
+    else{
+        $("#myDiv").hide();
+    }
+});
+
+$('#val-ownerDeptSelect').on('change', function(){
+    var demovalue = $(this).val(); 
+    
+    if(demovalue == "InputText"){
+        $("#myDivDept").show();
+    }
+    else{
+        $("#myDivDept").hide();
+    }
+});
+
+$('#val-ownerNameSelect').on('change', function(){
+    var demovalue = $(this).val(); 
+    
+    if(demovalue == "InputText"){
+        $("#myDivName").show();
+    }
+    else{
+        $("#myDivName").hide();
+    }
+});
+
+
